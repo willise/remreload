@@ -3,7 +3,7 @@
 import * as vscode from 'vscode';
 import {exec} from 'child_process';
 
-let DEBUG = false;
+let DEBUG = true;
 let checkConnectivity = false;
 let interval: NodeJS.Timeout | null = null;
 
@@ -20,6 +20,7 @@ function getConfig<T>(key: string): T {
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
+	// `vscode.env.remoteName` not useful any more.
 	if (vscode.env.remoteName === 'ssh-remote' || DEBUG) {
 		log('Starting');
 		let lastCheck = Date.now();
@@ -44,11 +45,8 @@ export function activate(context: vscode.ExtensionContext) {
 				}
 				console.log(`Connectivity check command exited with code ${code}`);
 			});
-		}, 2000);
-	} else if (vscode.env.remoteName) {
-		log(vscode.env.remoteName!);
-	}
-}
+		}, 5000);
+	} 
 
 // this method is called when your extension is deactivated
 export function deactivate() {
